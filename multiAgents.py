@@ -87,6 +87,8 @@ class ReflexAgent(Agent):
             totalFoodDist = 1
 
         # Get distance to ghost--more is better
+
+        # Only one ghost is considered
         ghostPos = newGhostStates[0].getPosition()
         ghostDist = manhattanDistance(newPos, ghostPos)
         numFood = len(foodList)
