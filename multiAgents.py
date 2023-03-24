@@ -260,7 +260,6 @@ class AlphaBetaAgent(MultiAgentSearchAgent):
                 for action in minActions:
                     successorState = currentGameState.generateSuccessor(ghostIndex, action)
                     newBest = maxValue(self,successorState,depth+1,alpha,beta)
-                    #print("Min Action: ", action, " Best: ", newBest)
                     newBestScore = newBest[0]
                     if newBestScore < v:
                         bestAction = action
