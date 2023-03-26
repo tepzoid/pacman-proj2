@@ -378,6 +378,33 @@ def betterEvaluationFunction(currentGameState):
     DESCRIPTION: <write something here so we know what you did>
     """
     "*** YOUR CODE HERE ***"
+    newPos = currentGameState.getPacmanPosition()
+    newFood = currentGameState.getFood()
+    newGhostStates = currentGameState.getGhostStates()
+    newScaredTimes = [ghostState.scaredTimer for ghostState in newGhostStates]
+    foodList = newFood.asList()
+
+    # Get total distance to all foods--less is better
+    totalFoodDist = 0
+    for food in foodList:
+        totalFoodDist += manhattanDistance(food, newPos)
+
+    if len(foodList) == 0:  # Ensure no divide-by-zero error
+        totalFoodDist = 1
+
+    # Get distance to ghost--more is better
+
+    # Only one ghost is considered
+    ghostPos = newGhostStates[0].getPosition()
+    ghostDist = manhattanDistance(newPos, ghostPos)
+    numFood = len(foodList)
+
+    # Linear combination of each factor
+    adjustment = ghostDist / totalFoodDist - 3 * numFood
+
+    # Can also include win state/ lose state
+    return currentGameState.getScore() + adjustment
+    
     util.raiseNotDefined()
 
 
