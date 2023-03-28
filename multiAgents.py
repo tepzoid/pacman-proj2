@@ -375,7 +375,8 @@ def betterEvaluationFunction(currentGameState):
     Your extreme ghost-hunting, pellet-nabbing, food-gobbling, unstoppable
     evaluation function (question 5).
 
-    DESCRIPTION: <write something here so we know what you did>
+    DESCRIPTION: Minimize the distance to all food, minimize the number of food, encourage visit capsules
+                if the ghost is scared, chase the ghost as well
     """
     "*** YOUR CODE HERE ***"
     newPos = currentGameState.getPacmanPosition()
@@ -383,6 +384,7 @@ def betterEvaluationFunction(currentGameState):
     newGhostStates = currentGameState.getGhostStates()
     newScaredTimes = [ghostState.scaredTimer for ghostState in newGhostStates]
     foodList = newFood.asList()
+    capsuleList = currentGameState.getCapsules()
 
     # Get total distance to all foods--less is better
     totalFoodDist = 0
@@ -399,10 +401,19 @@ def betterEvaluationFunction(currentGameState):
     ghostDist = manhattanDistance(newPos, ghostPos)
     numFood = len(foodList)
 
-    # Linear combination of each factor
-    adjustment = ghostDist / totalFoodDist - 3 * numFood
+    # Persuade the Pacman to visit the Capsule
+    capsuleBonus = 0
+    for cap in capsuleList:
+        if newPos == cap:
+            capsuleBonus = 500
 
-    # Can also include win state/ lose state
+    # [Minimize the distance to all food, minimize the number of food, encourage visit capsules] <=> A
+    adjustment = ghostDist / totalFoodDist - 3 * numFood + capsuleBonus
+
+    # Chase the ghost if it is scared + A
+    if newScaredTimes[0] > 0:
+        adjustment = 1 / totalFoodDist - 3 * numFood + capsuleBonus + 100 / ghostDist
+
     return currentGameState.getScore() + adjustment
     
     util.raiseNotDefined()
